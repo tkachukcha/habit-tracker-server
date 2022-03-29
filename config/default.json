@@ -1,4 +1,4 @@
 {
   "port": 8080,
-  "mongoUri": ""
+  "mongoUri": "mongodb+srv://tkachukcha:ReCTrOvESeNTIcYAolP@cluster0.znke7.mongodb.net/habit-tracker-db?retryWrites=true&w=majority"
 }
