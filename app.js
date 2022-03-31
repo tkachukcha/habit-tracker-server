@@ -5,6 +5,10 @@ const config = require('config');
 const initDatabase = require('./startup/initDatabase');
 const routes = require('./routes');
 
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
+
 const app = express();
 
 app.use(express.json());
@@ -19,7 +23,7 @@ async function start() {
     mongoose.connection.once('open', () => {
       initDatabase();
     });
-    await mongoose.connect(config.get('mongoUri'));
+    await mongoose.connect(`${process.env.MONGO_URI}${config.get('mongoUri')}`);
     console.log(chalk.blueBright('Connected to mongoDB'));
     app.listen(PORT, () => {
       console.log(chalk.green(`Server is listening on port ${PORT}...`));
