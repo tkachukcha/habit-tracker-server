@@ -20,9 +20,9 @@ const PORT = config.get('port') ?? 8080;
 
 async function start() {
   try {
-    mongoose.connection.once('open', () => {
-      initDatabase();
-    });
+    // mongoose.connection.once('open', () => {
+    //   initDatabase();
+    // });
     await mongoose.connect(`${process.env.MONGO_URI}${config.get('mongoUri')}`);
     console.log(chalk.blueBright('Connected to mongoDB'));
     app.listen(PORT, () => {

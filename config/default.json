@@ -1,4 +1,6 @@
 {
   "port": 8080,
-  "mongoUri": "@cluster0.znke7.mongodb.net/habit-tracker-db?retryWrites=true&w=majority"
+  "mongoUri": "@cluster0.znke7.mongodb.net/habit-tracker-db?retryWrites=true&w=majority",
+  "accessSecret": "Very Secret",
+  "refreshSecret": "Super Secret"
 }
