@@ -5,7 +5,7 @@ const schema = new Schema(
     date: Date,
     isPerfect: Boolean,
     userId: { type: Schema.Types.ObjectId, ref: 'User' },
-    habitId: [{ type: Schema.Types.ObjectId, ref: 'Habit'}]
+    habitStatusId: [{ type: Schema.Types.ObjectId, ref: 'HabitStatus'}]
   },
   {
     timestamps: true

@@ -16,7 +16,7 @@ router.post('/signUp', [
         return res.status(400).json({
           error: {
             message: 'INVALID_DATA',
-            code: 300
+            code: 400
           }
         });
       }
