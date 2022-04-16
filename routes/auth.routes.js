@@ -54,7 +54,7 @@ router.post('/signUp', [
 ]);
 
 router.post('/signInWithPassword', [
-  check('email', 'Email is not valid').normalizeEmail().isEmail(),
+  check('email', 'Email is not valid').isEmail(),
   check('password', 'You must enter password').exists(),
   async (req, res) => {
     try {
@@ -69,7 +69,7 @@ router.post('/signInWithPassword', [
       }
 
       const { email, password } = req.body;
-
+      console.log(email);
       const existingUser = await User.findOne({ email });
 
       if (!existingUser) {
