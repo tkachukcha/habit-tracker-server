@@ -1,7 +1,8 @@
 const express = require('express');
-const router = express.Router({ mergeParams: true });
 const User = require('../models/User');
 const auth = require('../middleware/auth.middleware');
+
+const router = express.Router({ mergeParams: true });
 
 router.get('/:id', auth, async (req, res) => {
   try {
