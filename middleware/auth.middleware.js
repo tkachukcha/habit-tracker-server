@@ -6,16 +6,18 @@ module.exports = (req, res, next) => {
   }
 
   try {
-    const token = req.headers.autorization.split(' ')[1];
+    const token = req.headers.authorization.split(' ')[1];
     if (!token) {
-      return res.status(401).json({ message: 'Unauthorized' });
+      return res.status(401).json({ message: 'Unauthorized. No token' });
     }
     const data = tokenService.validateAccess(token);
-
+    if (!data) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
     req.user = data;
 
     next();
   } catch (error) {
-    return res.status(401).json({ message: 'Unauthorized' });
+    return res.status(401).json({ message: 'Unauthorized. Server error' });
   }
 }
