@@ -15,6 +15,7 @@ class TokenService {
       expiresIn: 3600
     };
   }
+  
   async save(user, refreshToken) {
     const data = await Token.findOne({ user });
     if (data) {
@@ -24,6 +25,23 @@ class TokenService {
     const token = await Token.create({ user, refreshToken });
     return token;
   }
+
+  async findToken(refreshToken) {
+    try {
+      return await Token.findOne({ refreshToken });
+    } catch (error) {
+      return null;
+    }
+  }
+
+  validateAccess(accessToken) {
+    try {
+      return jwt.verify(accessToken, config.get('accessSecret'));
+    } catch (error) {
+      return null;
+    }
+  }
+
   validateRefresh(refreshToken) {
     try {
       return jwt.verify(refreshToken, config.get('refreshSecret'));
@@ -31,6 +49,7 @@ class TokenService {
       return null;
     }
   }
+
   async findToken(refreshToken) {
     try {
       return await Token.findOne({ refreshToken });
