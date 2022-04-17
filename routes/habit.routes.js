@@ -36,6 +36,17 @@ router.patch('/:id', auth, async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {});
+router.delete('/:id', auth, async (req, res) => {
+  const habit = await Habit.findById(req.params.id);
+  if (habit.userId.toString() !== req.user._id) {
+    return res.status(401).json({ message: 'Unauthorized' });
+  }
+  try {
+    await habit.remove();
+    res.send(null);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error. Try again later' });
+  }
+});
 
 module.exports = router;
