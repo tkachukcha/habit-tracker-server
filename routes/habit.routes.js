@@ -13,7 +13,16 @@ router.get('/:userId', auth, async (req, res) => {
   }
 });
 
-router.post('/:id', async (req, res) => {});
+router.post('/', auth, async (req, res) => {
+  try {
+    const newHabit = await Habit.create(req.body);
+    res.status(201).send(newHabit);
+  } catch (error) {
+    res
+        .status(500)
+        .json({ message: 'Internal server error. Try again later' });
+  }
+});
 
 router.patch('/:id', async (req, res) => {});
 
