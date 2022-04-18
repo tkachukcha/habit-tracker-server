@@ -1,20 +1,22 @@
 const express = require('express');
+const dayjs = require('dayjs');
+const Day = require('../models/Day');
 const router = express.Router({ mergeParams: true });
+const auth = require('../middleware/auth.middleware');
 
-router.get('/:date', async (req, res) => {
-  
+router.post('/', auth, async (req, res) => {
+
+  const newDay = await Day.create({
+    date: dayjs().format('DD/MM/YYYY'),
+    isPerfect: false,
+    userId: req.user._id,
+    habitStatusId: []
+  })
+  res.status(201).send(null);
 });
 
-router.get('/:userId', async (req, res) => {
-  
-});
+router.get('/:date', async (req, res) => {});
 
-router.post('/:id', async (req, res) => {
-  
-});
-
-router.patch('/:id', async (req, res) => {
-  
-});
+router.patch('/:date', async (req, res) => {});
 
 module.exports = router;
