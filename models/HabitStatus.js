@@ -4,7 +4,7 @@ const schema = new Schema(
   {
     isCompleted: Boolean,
     habitId: { type: Schema.Types.ObjectId, ref: 'Habit' },
-    dayId: { type: Schema.Types.ObjectId, ref: 'Day' }
+    date: String
   },
   {
     timestamps: true
