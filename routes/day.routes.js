@@ -17,7 +17,7 @@ router.post('/', auth, async (req, res) => {
     });
     if (day) {
       const statuses = await HabitStatus.find({date: req.body.date});
-      res.status(200).json({ message: 'Date exists', statuses });
+      res.status(200).json({ date: req.body.date, statuses });
     } else {
       const habits = await Habit.find({ userId: req.user._id });
       const habitsStatuses = habits.map((habit) => ({
@@ -34,7 +34,7 @@ router.post('/', auth, async (req, res) => {
         habitStatusId: statuses.map((status) => status._id)
       });
 
-      res.status(201).json({ message: 'New date created', statuses });
+      res.status(201).json({ date: dayjs().format('DD/MM/YYYY'), statuses });
     }
   } catch (error) {
     res.status(500).json({ message: 'Internal server error. Try again later' });
