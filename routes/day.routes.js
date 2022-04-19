@@ -30,7 +30,7 @@ router.post('/', auth, async (req, res) => {
         date: dayjs().format('DD/MM/YYYY'),
         isPerfect: false,
         userId: req.user._id,
-        habitStatusId: statuses.map(status => status._id)
+        habitStatusId: statuses.map((status) => status._id)
       });
 
       res.status(201).json({ message: 'New date created' });
