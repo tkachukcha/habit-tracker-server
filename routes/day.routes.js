@@ -13,11 +13,12 @@ router.post('/', auth, async (req, res) => {
     }
     const day = await Day.findOne({
       userId: req.user._id,
-      date: req.body.date
+      date: dayjs().format('DD/MM/YYYY')
     });
     if (day) {
-      const statuses = await HabitStatus.find({date: req.body.date});
-      res.status(200).json({ date: req.body.date, statuses });
+      const statuses = await HabitStatus.find({ date: req.body.date });
+      const dayWithStatuses = {...day._doc, habitStatuses: statuses }
+      res.status(200).json(dayWithStatuses);
     } else {
       const habits = await Habit.find({ userId: req.user._id });
       const habitsStatuses = habits.map((habit) => ({
@@ -27,14 +28,22 @@ router.post('/', auth, async (req, res) => {
       }));
       const statuses = await HabitStatus.create(habitsStatuses);
 
-      await Day.create({
+      const newDay = {
         date: dayjs().format('DD/MM/YYYY'),
         isPerfect: false,
-        userId: req.user._id,
-        habitStatusId: statuses.map((status) => status._id)
-      });
+        userId: req.user._id
+      };
 
-      res.status(201).json({ date: dayjs().format('DD/MM/YYYY'), statuses });
+      const dbDay = {
+        ...newDay,
+        habitStatusId: statuses.map((status) => status._id)
+      };
+
+      const outputDay = { ...newDay, habitStatuses: statuses };
+
+      await Day.create(dbDay);
+
+      res.status(201).json(outputDay);
     }
   } catch (error) {
     res.status(500).json({ message: 'Internal server error. Try again later' });
