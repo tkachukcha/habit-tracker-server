@@ -27,8 +27,13 @@ router.get('/:habitId', auth, async (req, res) => {
   }
 });
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', auth, async (req, res) => {
   try {
+    const update = req.body;
+    const newHabitStatus = await HabitStatus.findOneAndUpdate({_id: req.params.id}, update, {
+      new: true
+    });
+    res.status(200).json(newHabitStatus);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error. Try again later' });
   }
