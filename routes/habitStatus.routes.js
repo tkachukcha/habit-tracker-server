@@ -39,11 +39,4 @@ router.patch('/:id', auth, async (req, res) => {
   }
 });
 
-router.delete('/:id', async (req, res) => {
-  try {
-  } catch (error) {
-    res.status(500).json({ message: 'Internal server error. Try again later' });
-  }
-});
-
 module.exports = router;
