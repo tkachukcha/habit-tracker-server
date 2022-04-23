@@ -31,11 +31,11 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-router.patch('/:id', auth, async (req, res) => {
+router.patch('/', auth, async (req, res) => {
   try {
     const updatedDay = await Day.findOneAndUpdate(
-      { _id: req.params.id },
-      req.body,
+      { date: req.body.date, userId: req.user._id },
+      {isPerfect: req.body.isPerfect},
       {
         new: true
       }
