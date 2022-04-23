@@ -11,8 +11,8 @@ router.post('/', auth, async (req, res) => {
   try {
     const habits = await Habit.find({ userId: req.user._id });
 
-    const todayDate = dayjs().format('DD/MM/YYYY');
-    const { isNew, day } = await checkDay(req.user._id, todayDate, habits);
+    const date = req.body.date;
+    const { isNew, day } = await checkDay(req.user._id, date, habits);
 
     const resStatus = isNew ? 201 : 200;
 
