@@ -41,7 +41,7 @@ async function checkDay(userId, date, habits) {
   });
   if (day) {
     const statuses = await HabitStatus.find({userId, date})
-    return { isNew: false, day: {...day, habitStatuses: statuses } };
+    return { isNew: false, day: {...day._doc, habitStatuses: statuses } };
   } else {
     return { isNew: true, day: await createDay(userId, date, habits) };
   }
@@ -70,7 +70,7 @@ async function createDay(userId, date, habits) {
   await Day.create(dbDay);
 
   const outputDay = {
-    ...newDay,
+    ...dbDay,
     habitStatuses: statuses
   }
 
