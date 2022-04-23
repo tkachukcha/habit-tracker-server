@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
 const tokenService = require('../services/token.service');
+const dayjs = require('dayjs');
 
 const router = express.Router({ mergeParams: true });
 
@@ -38,6 +39,7 @@ router.post('/signUp', [
 
       const newUser = await User.create({
         ...req.body,
+        firstLogin: dayjs().format('DD/MM/YYYY'),
         password: hashedPassword
       });
 

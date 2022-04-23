@@ -7,44 +7,17 @@ const router = express.Router({ mergeParams: true });
 const auth = require('../middleware/auth.middleware');
 
 router.post('/', auth, async (req, res) => {
+  
   try {
-    if (!req.body.date) {
-      return res.status(400).json({ message: 'Send date query' });
-    }
-    const day = await Day.findOne({
-      userId: req.user._id,
-      date: dayjs().format('DD/MM/YYYY')
-    });
-    if (day) {
-      const statuses = await HabitStatus.find({ date: req.body.date });
-      const dayWithStatuses = {...day._doc, habitStatuses: statuses }
-      res.status(200).json(dayWithStatuses);
-    } else {
-      const habits = await Habit.find({ userId: req.user._id });
-      const habitsStatuses = habits.map((habit) => ({
-        isCompleted: false,
-        habitId: habit._id,
-        date: dayjs().format('DD/MM/YYYY')
-      }));
-      const statuses = await HabitStatus.create(habitsStatuses);
+    const habits = await Habit.find({ userId: req.user._id });
 
-      const newDay = {
-        date: dayjs().format('DD/MM/YYYY'),
-        isPerfect: false,
-        userId: req.user._id
-      };
+    // Check today
+    const todayDate = dayjs().format('DD/MM/YYYY');
+    const { isNew, day } = await checkDay(req.user._id, todayDate, habits);
 
-      const dbDay = {
-        ...newDay,
-        habitStatusId: statuses.map((status) => status._id)
-      };
+    const resStatus = isNew ? 201 : 200;
 
-      const outputDay = { ...newDay, habitStatuses: statuses };
-
-      await Day.create(dbDay);
-
-      res.status(201).json(outputDay);
-    }
+    res.status(resStatus).json(day);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error. Try again later' });
   }
@@ -60,5 +33,48 @@ router.get('/', auth, async (req, res) => {
 });
 
 router.patch('/:date', async (req, res) => {});
+
+async function checkDay(userId, date, habits) {
+  const day = await Day.findOne({
+    userId,
+    date
+  });
+  if (day) {
+    const statuses = await HabitStatus.find({userId, date})
+    return { isNew: false, day: {...day, habitStatuses: statuses } };
+  } else {
+    return { isNew: true, day: await createDay(userId, date, habits) };
+  }
+}
+
+async function createDay(userId, date, habits) {
+  const habitsStatuses = habits.map((habit) => ({
+    isCompleted: false,
+    habitId: habit._id,
+    date
+  }));
+
+  const statuses = await HabitStatus.create(habitsStatuses);
+
+  const newDay = {
+    date,
+    isPerfect: false,
+    userId,
+  };
+
+  const dbDay = {
+    ...newDay,
+    habitStatusId: statuses.map(status => status._id)
+  }
+
+  await Day.create(dbDay);
+
+  const outputDay = {
+    ...newDay,
+    habitStatuses: statuses
+  }
+
+  return outputDay;
+}
 
 module.exports = router;
