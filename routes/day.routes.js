@@ -35,7 +35,7 @@ router.patch('/:id', auth, async (req, res) => {
   try {
     const updatedDay = await Day.findOneAndUpdate(
       { _id: req.params.id },
-      req.body.values,
+      req.body,
       {
         new: true
       }
