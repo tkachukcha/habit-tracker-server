@@ -11,7 +11,6 @@ router.post('/', auth, async (req, res) => {
   try {
     const habits = await Habit.find({ userId: req.user._id });
 
-    // Check today
     const todayDate = dayjs().format('DD/MM/YYYY');
     const { isNew, day } = await checkDay(req.user._id, todayDate, habits);
 
@@ -32,7 +31,20 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-router.patch('/:date', async (req, res) => {});
+router.patch('/:id', auth, async (req, res) => {
+  try {
+    const updatedDay = await Day.findOneAndUpdate(
+      { _id: req.params.id },
+      req.body.values,
+      {
+        new: true
+      }
+    );
+    res.status(200).json(updatedDay);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error. Try again later' });
+  }
+});
 
 async function checkDay(userId, date, habits) {
   const day = await Day.findOne({
