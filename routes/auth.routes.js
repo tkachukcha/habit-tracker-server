@@ -39,7 +39,7 @@ router.post('/signUp', [
 
       const newUser = await User.create({
         ...req.body,
-        firstLogin: dayjs().format('DD/MM/YYYY'),
+        firstLogin: dayjs().format('YYYY-MM-DD'),
         password: hashedPassword
       });
 

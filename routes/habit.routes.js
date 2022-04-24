@@ -18,7 +18,7 @@ router.get('/:userId', auth, async (req, res) => {
 
 router.post('/', auth, async (req, res) => {
   try {
-    const date = dayjs().format('DD/MM/YYYY');
+    const date = dayjs().format('YYYY-MM-DD');
     const newHabit = await Habit.create(req.body);
     const newStatus = await HabitStatus.create({
       date,

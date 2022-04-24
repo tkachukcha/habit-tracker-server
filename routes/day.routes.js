@@ -7,7 +7,6 @@ const router = express.Router({ mergeParams: true });
 const auth = require('../middleware/auth.middleware');
 
 router.post('/', auth, async (req, res) => {
-  
   try {
     const habits = await Habit.find({ userId: req.user._id });
 
@@ -24,7 +23,13 @@ router.post('/', auth, async (req, res) => {
 
 router.get('/', auth, async (req, res) => {
   try {
+    const { date } = req.query;
     const days = await Day.find({ userId: req.user._id });
+    if (date) {
+      const month = date.substring(0, 7);
+      const filteredDays = days.filter((day) => day.date.includes(month));
+      return res.status(200).json(filteredDays);
+    }
     res.status(200).json(days);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error. Try again later' });
@@ -35,7 +40,7 @@ router.patch('/', auth, async (req, res) => {
   try {
     const updatedDay = await Day.findOneAndUpdate(
       { date: req.body.date, userId: req.user._id },
-      {isPerfect: req.body.isPerfect},
+      { isPerfect: req.body.isPerfect },
       {
         new: true
       }
@@ -52,8 +57,8 @@ async function checkDay(userId, date, habits) {
     date
   });
   if (day) {
-    const statuses = await HabitStatus.find({userId, date})
-    return { isNew: false, day: {...day._doc, habitStatuses: statuses } };
+    const statuses = await HabitStatus.find({ userId, date });
+    return { isNew: false, day: { ...day._doc, habitStatuses: statuses } };
   } else {
     return { isNew: true, day: await createDay(userId, date, habits) };
   }
@@ -71,20 +76,20 @@ async function createDay(userId, date, habits) {
   const newDay = {
     date,
     isPerfect: false,
-    userId,
+    userId
   };
 
   const dbDay = {
     ...newDay,
-    habitStatusId: statuses.map(status => status._id)
-  }
+    habitStatusId: statuses.map((status) => status._id)
+  };
 
   await Day.create(dbDay);
 
   const outputDay = {
     ...dbDay,
     habitStatuses: statuses
-  }
+  };
 
   return outputDay;
 }
