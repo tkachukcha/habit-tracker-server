@@ -26,8 +26,9 @@ router.get('/', auth, async (req, res) => {
     const { date } = req.query;
     const days = await Day.find({ userId: req.user._id });
     if (date) {
+      const today = dayjs().format('YYYY-MM-DD');
       const month = date.substring(0, 7);
-      const filteredDays = days.filter((day) => day.date.includes(month));
+      const filteredDays = days.filter((day) => day.date.includes(month) && day.date !== today);
       return res.status(200).json(filteredDays);
     }
     res.status(200).json(days);
