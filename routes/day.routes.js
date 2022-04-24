@@ -39,14 +39,10 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
-router.get('/id', auth, async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
     const day = await Day.findById(req.params.id);
-    if (day) {
-      res.status(200).json(day);
-    } else {
-      res.status(404);
-    }
+    res.status(200).json(day);
   } catch (error) {
     res.status(500).json({ message: 'Internal server error. Try again later' });
   }
