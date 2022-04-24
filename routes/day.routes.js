@@ -28,10 +28,25 @@ router.get('/', auth, async (req, res) => {
     if (date) {
       const today = dayjs().format('YYYY-MM-DD');
       const month = date.substring(0, 7);
-      const filteredDays = days.filter((day) => day.date.includes(month) && day.date !== today);
+      const filteredDays = days.filter(
+        (day) => day.date.includes(month) && day.date !== today
+      );
       return res.status(200).json(filteredDays);
     }
     res.status(200).json(days);
+  } catch (error) {
+    res.status(500).json({ message: 'Internal server error. Try again later' });
+  }
+});
+
+router.get('/id', auth, async (req, res) => {
+  try {
+    const day = await Day.findById(req.params.id);
+    if (day) {
+      res.status(200).json(day);
+    } else {
+      res.status(404);
+    }
   } catch (error) {
     res.status(500).json({ message: 'Internal server error. Try again later' });
   }
